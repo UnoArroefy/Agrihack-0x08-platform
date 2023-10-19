@@ -1,6 +1,7 @@
 import base64  # noqa: I001
 
 import requests, json, os
+from dotenv import load_dotenv
 from flask import Blueprint, abort
 from flask import current_app as app
 from flask import redirect, render_template, request, session, url_for
@@ -414,10 +415,13 @@ def login():
                 username = (request.form["name"]).split("@")[0]
             else:
                 username = request.form["name"]
+            
+            load_dotenv()
             req = requests.post(
                 url= os.environ.get("AUTH_URL"),
-                json={'userName': username, 'password': request.form["password"] },
-                headers=os.environ.get("AUTH_HEADERS")),
+                data=json.dumps({'userName': username, 'password': request.form["password"]}),
+                headers=eval(os.environ.get("AUTH_HEADERS"))
+                )
 
             if req.status_code == 200:
                 with app.app_context():
