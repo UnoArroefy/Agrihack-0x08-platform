@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+<!-- {% extends "base.html" %}
 
 {% block content %}
 <div class="jumbotron">
@@ -58,6 +58,150 @@
 	{% endif %}
 	{% endcache %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+	<script defer src="{{ url_for('views.themes', path='js/echarts.bundle.js') }}"></script>
+{% endblock %}
+
+{% block entrypoint %}
+	<script defer src="{{ url_for('views.themes', path='js/pages/scoreboard.js') }}"></script>
+{% endblock %} -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="container">
+		<h1>Scoreboard</h1>
+	</div>
+</div>
+<div class="container">
+	{% include "components/errors.html" %}
+
+	<div id="score-graph" class="row d-flex align-items-center">
+		<div class="col-md-12 text-center">
+			<i class="fas fa-circle-notch fa-spin fa-3x fa-fw spinner"></i>
+		</div>
+	</div>
+
+	<script>
+		function show(shown, hidden1, hidden2) {
+			document.getElementById(shown).style.display='block';
+			document.getElementById(hidden1).style.display='none';
+			document.getElementById(hidden2).style.display='none';
+			return false;
+		}
+	</script>
+
+	{% cache 60, CacheKeys.PUBLIC_SCOREBOARD_TABLE %}
+	{% if standings %}
+
+		<div>
+		</div>
+	<div class="dropdown">
+		<button class="btn btn-primary dropdown-toggle" type="button" id="category" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">View</button>
+		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			<button class="dropdown-item" type="button" href="#" onclick="return show('scoreboard', 'scoreboard1', 'scoreboard2')" autocomplete="off" checked>All</button>
+			<button class="dropdown-item" type="button" href="#" onclick="return show('scoreboard1', 'scoreboard', 'scoreboard2')" autocomplete="off">Peserta</button>
+			<button class="dropdown-item" type="button" href="#" onclick="return show('scoreboard2', 'scoreboard', 'scoreboard1')" autocomplete="off">Non Peserta</button>
+		</div>
+	</div>
+
+	<div id="scoreboard" class="row" style="display:block">
+	<h1 align="center">All</h1>
+		<div class="col-md-12">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td scope="col" width="10px"><b>Place</b></td>
+						<td scope="col"><b>Nama</b></td>
+						<td scope="col"><b>Dept / Angkatan</b></td>
+						<td scope="col"><b>Score</b></td>
+					</tr>
+				</thead>
+				<tbody>
+				{% for standing in standings %}
+					<tr>
+						<th scope="row" class="text-center">{{ loop.index }}</th>
+						<td>
+							<a href="{{ generate_account_url(standing.account_id) }}">
+								{{ standing.nama_lengkap| truncate(50) }}
+							</a>
+						</td>
+						<td>{{ standing.nim | truncate(2, True, end='') }} / {{ standing.angkatan }}</td>
+						<td>{{ standing.score }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div id="scoreboard1" class="row" style="display:none">
+	<h1 align="center">Peserta</h1>
+		<div class="col-md-12">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td scope="col" width="10px"><b>Place</b></td>
+						<td scope="col"><b>Nama</b></td>
+						<td scope="col"><b>Dept / Angkatan</b></td>
+						<td scope="col"><b>Score</b></td>
+					</tr>
+				</thead>
+				<tbody>
+				{% for standing in standings1 %}
+					<tr>
+						<th scope="row" class="text-center">{{ loop.index }}</th>
+						<td>
+							<a href="{{ generate_account_url(standing.account_id) }}">
+								{{ standing.nama_lengkap| truncate(50) }}
+							</a>
+						</td>
+						<td>{{ standing.nim | truncate(2, True, end='') }} / {{ standing.angkatan }}</td>
+						<td>{{ standing.score }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div id="scoreboard2" class="row" style="display:none">
+	<h1 align="center">Non Peserta</h1>
+		<div class="col-md-12">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td scope="col" width="10px"><b>Place</b></td>
+						<td scope="col"><b>Nama</b></td>
+						<td scope="col"><b>Dept / Angkatan</b></td>
+						<td scope="col"><b>Score</b></td>
+					</tr>
+				</thead>
+				<tbody>
+				{% for standing in standings2 %}
+					<tr>
+						<th scope="row" class="text-center">{{ loop.index }}</th>
+						<td>
+							<a href="{{ generate_account_url(standing.account_id) }}">
+								{{ standing.nama_lengkap| truncate(50) }}
+							</a>
+						</td>
+						<td>{{ standing.nim | truncate(2, True, end='') }} / {{ standing.angkatan }}</td>
+						<td>{{ standing.score }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	{% endif %}
+	{% endcache %}
+</div>
+
 {% endblock %}
 
 {% block scripts %}

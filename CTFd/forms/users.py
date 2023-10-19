@@ -151,7 +151,10 @@ class PublicUserSearchForm(BaseForm):
 
 class UserBaseForm(BaseForm):
     name = StringField("User Name", validators=[InputRequired()])
+    nama_lengkap = StringField("Nama Lengkap")
+    angkatan = StringField("Angkatan")
     email = EmailField("Email", validators=[InputRequired()])
+    nim = StringField("NIM")
     language = SelectField(_l("Language"), choices=SELECT_LANGUAGE_LIST)
     password = PasswordField("Password")
     website = StringField("Website")
@@ -159,6 +162,7 @@ class UserBaseForm(BaseForm):
     country = SelectField("Country", choices=SELECT_COUNTRIES_LIST)
     type = SelectField("Type", choices=[("user", "User"), ("admin", "Admin")])
     verified = BooleanField("Verified")
+    ispeserta = BooleanField("ispeserta")
     hidden = BooleanField("Hidden")
     banned = BooleanField("Banned")
     submit = SubmitField("Submit")

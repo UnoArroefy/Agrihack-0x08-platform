@@ -8,7 +8,7 @@ from CTFd.utils.modes import get_model
 
 
 @cache.memoize(timeout=60)
-def get_standings(count=None, admin=False, fields=None):
+def get_standings(count=None, admin=False, fields=None, ispeserta=None):
     """
     Get standings as a list of tuples containing account_id, name, and score e.g. [(account_id, team_name, score)].
 
@@ -85,35 +85,73 @@ def get_standings(count=None, admin=False, fields=None):
                 Model.id.label("account_id"),
                 Model.oauth_id.label("oauth_id"),
                 Model.name.label("name"),
+                Model.nama_lengkap.label("nama_lengkap"),
+                Model.nim.label("nim"),
+                Model.angkatan.label("angkatan"),
                 Model.hidden,
                 Model.banned,
                 sumscores.columns.score,
                 *fields,
             )
             .join(sumscores, Model.id == sumscores.columns.account_id)
-            .order_by(
-                sumscores.columns.score.desc(),
-                sumscores.columns.date.asc(),
-                sumscores.columns.id.asc(),
-            )
+            # .order_by(
+            #     sumscores.columns.score.desc(),
+            #     sumscores.columns.date.asc(),
+            #     sumscores.columns.id.asc(),
+            # )
+            .order_by(sumscores.columns.score.desc(), sumscores.columns.id)
         )
+    # else:
+    #     standings_query = (
+    #         db.session.query(
+    #             Model.id.label("account_id"),
+    #             Model.oauth_id.label("oauth_id"),
+    #             Model.name.label("name"),
+    #             sumscores.columns.score,
+    #             *fields,
+    #         )
+    #         .join(sumscores, Model.id == sumscores.columns.account_id)
+    #         .filter(Model.banned == False, Model.hidden == False)
+    #         .order_by(
+    #             sumscores.columns.score.desc(),
+    #             sumscores.columns.date.asc(),
+    #             sumscores.columns.id.asc(),
+    #         )
+    #     )
     else:
-        standings_query = (
-            db.session.query(
-                Model.id.label("account_id"),
-                Model.oauth_id.label("oauth_id"),
-                Model.name.label("name"),
-                sumscores.columns.score,
-                *fields,
+        if ispeserta == None:
+            standings_query = (
+                db.session.query(
+                    Model.id.label("account_id"),
+                    Model.oauth_id.label("oauth_id"),
+                    Model.name.label("name"),
+                    Model.nama_lengkap.label("nama_lengkap"),
+                    Model.nim.label("nim"),
+                    Model.angkatan.label("angkatan"),
+                    sumscores.columns.score,
+                    *fields,
+                )
+                .join(sumscores, Model.id == sumscores.columns.account_id)
+                .filter(Model.banned == False, Model.hidden == False)
+                .order_by(sumscores.columns.score.desc(), sumscores.columns.id)
             )
-            .join(sumscores, Model.id == sumscores.columns.account_id)
-            .filter(Model.banned == False, Model.hidden == False)
-            .order_by(
-                sumscores.columns.score.desc(),
-                sumscores.columns.date.asc(),
-                sumscores.columns.id.asc(),
+        else:
+            standings_query = (
+                db.session.query(
+                    Model.id.label("account_id"),
+                    Model.oauth_id.label("oauth_id"),
+                    Model.name.label("name"),
+                    Model.nama_lengkap.label("nama_lengkap"),
+                    Model.nim.label("nim"),
+                    Model.angkatan.label("angkatan"),
+                    sumscores.columns.score,
+                    *fields,
+                )
+                .join(sumscores, Model.id == sumscores.columns.account_id)
+                .filter(Model.banned == False, Model.hidden == False)
+                .filter(Model.ispeserta == ispeserta)
+                .order_by(sumscores.columns.score.desc(), sumscores.columns.id)
             )
-        )
 
     """
     Only select a certain amount of users if asked.
@@ -217,7 +255,7 @@ def get_team_standings(count=None, admin=False, fields=None):
 
 
 @cache.memoize(timeout=60)
-def get_user_standings(count=None, admin=False, fields=None):
+def get_user_standings(count=None, admin=False, fields=None, ispeserta=None):
     if fields is None:
         fields = []
     scores = (
@@ -280,24 +318,55 @@ def get_user_standings(count=None, admin=False, fields=None):
                 sumscores.columns.id.asc(),
             )
         )
+    # else:
+    #     standings_query = (
+    #         db.session.query(
+    #             Users.id.label("user_id"),
+    #             Users.oauth_id.label("oauth_id"),
+    #             Users.name.label("name"),
+    #             Users.team_id.label("team_id"),
+    #             sumscores.columns.score,
+    #             *fields,
+    #         )
+    #         .join(sumscores, Users.id == sumscores.columns.user_id)
+    #         .filter(Users.banned == False, Users.hidden == False)
+    #         .order_by(
+    #             sumscores.columns.score.desc(),
+    #             sumscores.columns.date.asc(),
+    #             sumscores.columns.id.asc(),
+    #         )
+    #     )
+
     else:
-        standings_query = (
-            db.session.query(
-                Users.id.label("user_id"),
-                Users.oauth_id.label("oauth_id"),
-                Users.name.label("name"),
-                Users.team_id.label("team_id"),
-                sumscores.columns.score,
-                *fields,
+        if ispeserta == None:
+            standings_query = (
+                db.session.query(
+                    Users.id.label("user_id"),
+                    Users.oauth_id.label("oauth_id"),
+                    Users.name.label("name"),
+                    Users.team_id.label("team_id"),
+                    sumscores.columns.score,
+                    *fields,
+                )
+                .join(sumscores, Users.id == sumscores.columns.user_id)
+                .filter(Users.banned == False, Users.hidden == False)
+                .order_by(sumscores.columns.score.desc(), sumscores.columns.id)
             )
-            .join(sumscores, Users.id == sumscores.columns.user_id)
-            .filter(Users.banned == False, Users.hidden == False)
-            .order_by(
-                sumscores.columns.score.desc(),
-                sumscores.columns.date.asc(),
-                sumscores.columns.id.asc(),
+        else:
+            standings_query = (
+                db.session.query(
+                    Users.id.label("user_id"),
+                    Users.oauth_id.label("oauth_id"),
+                    Users.name.label("name"),
+                    Users.team_id.label("team_id"),
+                    sumscores.columns.score,
+                    *fields,
+                )
+                .join(sumscores, Users.id == sumscores.columns.user_id)
+                .filter(Users.banned == False, Users.hidden == False)
+                .filter(Users.ispeserta == ispeserta)
+                .order_by(sumscores.columns.score.desc(), sumscores.columns.id)
             )
-        )
 
     if count is None:
         standings = standings_query.all()

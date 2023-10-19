@@ -6,7 +6,12 @@
 {% block content %}
 	<div class="jumbotron">
 		<div class="container">
-			<h1>{{ user.name }}</h1>
+			<!-- <h1>{{ user.name }}</h1> -->
+			<h1>{% if user.nama_lengkap %}
+				{{ user.nama_lengkap }}
+			{% else %}
+				{{user.name}}
+			{% endif %}</h1>
 
 			{% if user.team_id %}
 				<h2>
@@ -49,6 +54,17 @@
 				<h2 class="text-center">
 					{% if account.place %}
 						{{ account.place }} <small>place</small>
+					{% endif %}
+				</h2>
+				<h2 class="text-center">
+					{% if account.ispeserta %}
+						{% if account.place2 %}
+							{{ account.place2 }} <small>place in Peserta</small>
+						{% endif %}
+					{% else %}
+						{% if account.place2 %}
+							{{ account.place2 }} <small>place in Non Peserta</small>
+						{% endif %}
 					{% endif %}
 				</h2>
 				<h2 class="text-center">

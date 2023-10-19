@@ -1,6 +1,6 @@
 import base64  # noqa: I001
 
-import requests
+import requests, json, os
 from flask import Blueprint, abort
 from flask import current_app as app
 from flask import redirect, render_template, request, session, url_for
@@ -181,7 +181,7 @@ def reset_password(data=None):
     return render_template("reset_password.html")
 
 
-@auth.route("/register", methods=["POST", "GET"])
+"""@auth.route("/register", methods=["POST", "GET"])
 @check_registration_visibility
 @ratelimit(method="POST", limit=10, interval=5)
 def register():
@@ -356,7 +356,8 @@ def register():
         return redirect(url_for("challenges.listing"))
     else:
         return render_template("register.html", errors=errors)
-
+        
+"""
 
 @auth.route("/login", methods=["POST", "GET"])
 @ratelimit(method="POST", limit=10, interval=5)
@@ -404,10 +405,55 @@ def login():
                 return render_template("login.html", errors=errors)
         else:
             # This user just doesn't exist
-            log("logins", "[{date}] {ip} - submitted invalid account information")
+            """log("logins", "[{date}] {ip} - submitted invalid account information")
             errors.append("Your username or password is incorrect")
             db.session.close()
-            return render_template("login.html", errors=errors)
+            return render_template("login.html", errors=errors)"""
+
+            if validators.validate_email(name) is True:
+                username = (request.form["name"]).split("@")[0]
+            else:
+                username = request.form["name"]
+            req = requests.post(
+                url= os.environ.get("AUTH_URL"),
+                json={'userName': username, 'password': request.form["password"] },
+                headers=os.environ.get("AUTH_HEADERS")),
+
+            if req.status_code == 200:
+                with app.app_context():
+                    res = (json.loads(req.text))
+                    user = Users(name=res['Username'], nama_lengkap=res['Nama'], email=res['Username'] + '@apps.ipb.ac.id', password=request.form["password"], angkatan=str(res['TahunMasuk']-1963), nim=res['NIM'], ispeserta=True if (int(res['TahunMasuk'])-1963 > 57) else False)
+
+                    db.session.add(user)
+                    db.session.commit()
+                    db.session.flush()
+
+                    db.session.commit()
+
+                    login_user(user)
+
+                    if request.args.get("next") and validators.is_safe_url(
+                        request.args.get("next")
+                    ):
+                        return redirect(request.args.get("next"))
+
+                log(
+                    "registrations",
+                    format="[{date}] {ip} - {name} registered with {email}",
+                    name=user.name,
+                    email=user.email,
+                )
+                db.session.close()
+
+                if is_teams_mode():
+                    return redirect(url_for("teams.private"))
+
+                return redirect(url_for("challenges.listing"))
+            else:
+                log("logins", "[{date}] {ip} - submitted invalid account information")
+                errors.append("Your username or password is incorrect")
+                db.session.close()
+                return render_template("login.html", errors=errors)
     else:
         db.session.close()
         return render_template("login.html", errors=errors)
@@ -519,7 +565,7 @@ def oauth_redirect():
                     )
                     return redirect(url_for("auth.login"))
 
-            if get_config("user_mode") == TEAMS_MODE and user.team_id is None:
+            if get_config("user_mode") == TEAMS_MODE:
                 team_id = api_data["team"]["id"]
                 team_name = api_data["team"]["name"]
 

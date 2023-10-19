@@ -16,20 +16,20 @@ users = Blueprint("users", __name__)
 @users.route("/users")
 @check_account_visibility
 def listing():
-    q = request.args.get("q")
+    """q = request.args.get("q")
     field = request.args.get("field", "name")
     if field not in ("name", "affiliation", "website"):
         field = "name"
 
     filters = []
     if q:
-        filters.append(getattr(Users, field).like("%{}%".format(q)))
+        filters.append(getattr(Users, field).like("%{}%".format(q)))"""
 
     users = (
         Users.query.filter_by(banned=False, hidden=False)
-        .filter(*filters)
-        .order_by(Users.id.asc())
-        .paginate(per_page=50)
+        # .filter(*filters)
+        .order_by(Users.nama_lengkap.asc())
+        .paginate(per_page=100)
     )
 
     args = dict(request.args)
@@ -40,8 +40,8 @@ def listing():
         users=users,
         prev_page=url_for(request.endpoint, page=users.prev_num, **args),
         next_page=url_for(request.endpoint, page=users.next_num, **args),
-        q=q,
-        field=field,
+        # q=q,
+        # field=field,
     )
 
 

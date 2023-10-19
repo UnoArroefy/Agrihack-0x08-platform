@@ -16,8 +16,11 @@ depends_on = None
 
 
 def upgrade(op=None):
+    # columns = get_columns_for_table(
+    #     op=op, table_name="dynamic_challenge", names_only=True
+    # )
     columns = get_columns_for_table(
-        op=op, table_name="dynamic_challenge", names_only=True
+        op=op, table_name="dynamic_challenge"
     )
     if "function" not in columns:
         op.add_column(

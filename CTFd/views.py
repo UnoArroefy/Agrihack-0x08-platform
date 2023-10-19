@@ -104,7 +104,8 @@ def setup():
             registration_visibility = RegistrationVisibilityTypes(
                 request.form.get(
                     "registration_visibility",
-                    default=RegistrationVisibilityTypes.PUBLIC,
+                    # default=RegistrationVisibilityTypes.PUBLIC,
+                    default=RegistrationVisibilityTypes.PRIVATE,
                 )
             )
             verify_emails = request.form.get("verify_emails")
@@ -373,10 +374,13 @@ def settings():
         "settings.html",
         name=user.name,
         email=user.email,
+        nim = user.nim,
+        nama_lengkap = user.nama_lengkap,
+        angkatan = user.angkatan,
         language=user.language,
-        website=user.website,
-        affiliation=user.affiliation,
-        country=user.country,
+        # website=user.website,
+        # affiliation=user.affiliation,
+        # country=user.country,
         tokens=tokens,
         prevent_name_change=prevent_name_change,
         infos=infos,

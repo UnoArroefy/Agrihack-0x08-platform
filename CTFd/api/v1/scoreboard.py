@@ -137,7 +137,8 @@ class ScoreboardDetail(Resource):
         for i, _team in enumerate(team_ids):
             response[i + 1] = {
                 "id": standings[i].account_id,
-                "name": standings[i].name,
+                # "name": standings[i].name,
+                "name": standings[i].nama_lengkap,
                 "solves": solves_mapper.get(standings[i].account_id, []),
             }
         return {"success": True, "data": response}

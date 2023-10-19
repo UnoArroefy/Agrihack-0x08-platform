@@ -7,7 +7,9 @@
 				</div>
 			</th>
 			<th class="sort-col text-center"><b>Place</b></th>
-			<th class="sort-col"><b>{{ get_mode_as_word(capitalize=True) }}</b></th>
+			<!-- <th class="sort-col"><b>{{ get_mode_as_word(capitalize=True) }}</b></th> -->
+			<th class="sort-col"><b>Nama Lengkap</b></th>
+			<th class="sort-col"><b>NIM</b></th>
 			<th class="sort-col"><b>Score</b></th>
 			<th class="sort-col"><b>Visibility</b></th>
 		</tr>
@@ -23,7 +25,8 @@
 			<td class="text-center" width="10%">{{ loop.index }}</td>
 			<td>
 				<a href="{{ generate_account_url(standing.account_id, admin=True) }}">
-					{{ standing.name }}
+					<!-- {{ standing.name }} -->
+					{{ standing.nama_lengkap }}
 					{% if standing.oauth_id %}
 						{% if get_config('user_mode') == 'teams' %}
 							<a href="https://majorleaguecyber.org/t/{{ standing.name }}">
@@ -37,6 +40,7 @@
 					{% endif %}
 				</a>
 			</td>
+			<td>{{ standing.nim }}</td>
 			<td>{{ standing.score }}</td>
 			<td>
 				{% if standing.hidden %}

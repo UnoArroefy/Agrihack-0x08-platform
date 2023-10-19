@@ -26,4 +26,7 @@ def listing():
         infos.append("Scores are not currently visible to users")
 
     standings = get_standings()
-    return render_template("scoreboard.html", standings=standings, infos=infos)
+    # return render_template("scoreboard.html", standings=standings, infos=infos)
+    standings1 = get_standings(ispeserta=True)
+    standings2 = get_standings(ispeserta=False)
+    return render_template("scoreboard.html", standings=standings, standings1=standings1, standings2=standings2, infos=infos)

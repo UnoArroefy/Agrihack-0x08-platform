@@ -306,7 +306,7 @@ class UserPrivate(Resource):
         response["score"] = user.score
         return {"success": True, "data": response}
 
-    @authed_only
+    """@authed_only
     @users_namespace.doc(
         description="Endpoint to edit the User object for the current user",
         responses={
@@ -336,7 +336,7 @@ class UserPrivate(Resource):
         clear_standings()
         clear_challenges()
 
-        return {"success": True, "data": response.data}
+        return {"success": True, "data": response.data}"""
 
 
 @users_namespace.route("/me/solves")
