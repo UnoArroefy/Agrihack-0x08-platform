@@ -9,15 +9,15 @@
 		{{ form.email.label }}
 		{{ form.email(class="form-control", autocomplete="off") }}
 	</div>
-	<div class="form-group">
+	<!-- <div class="form-group">
 		{{ form.language.label }}
 		{{ form.language(class="form-control custom-select", autocomplete="off") }}
-	</div>
+	</div> -->
 	<div class="form-group">
 		{{ form.password.label }}
 		{{ form.password(class="form-control", autocomplete="off") }}
 	</div>
-	<div class="form-group">
+	<!-- <div class="form-group">
 		{{ form.website.label }}
 		{{ form.website(class="form-control", autocomplete="off") }}
 	</div>
@@ -28,6 +28,13 @@
 	<div class="form-group">
 		{{ form.country.label }}
 		{{ form.country(class="form-control custom-select", autocomplete="off") }}
+	</div> -->
+	<div class="form-group">
+		<label for="ispeserta">Peserta</label>
+		<select class="form-control custom-select" name="ispeserta" autocomplete="off">
+			<option value="1" {% if form.ispeserta.data == True %}selected{% endif %}>True</option>
+			<option value="0" {% if form.ispeserta.data == False %}selected{% endif %}>False</option>
+		</select>
 	</div>
 
 	{{ render_extra_fields(form.extra) }}
