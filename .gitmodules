@@ -1,0 +1,3 @@
+[submodule "CTFd/plugins/ctfd-discord-webhook-plugin"]
+	path = CTFd/plugins/ctfd-discord-webhook-plugin
+	url = https://github.com/sigpwny/ctfd-discord-webhook-plugin.git

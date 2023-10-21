@@ -16,6 +16,8 @@ services:
       - ACCESS_LOG=-
       - ERROR_LOG=-
       - REVERSE_PROXY=true
+      - DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/1165150904396283945/zxVoMrq_P8YCTpFoU3TqKwoOfs63Gb1k2tTfYeOW5aD-Fwsl14Pa16uz5eMJK9sVdjHn
+      - DISCORD_WEBHOOK_LIMIT=1
     volumes:
       - .data/CTFd/logs:/var/log/CTFd
       - .data/CTFd/uploads:/var/uploads
