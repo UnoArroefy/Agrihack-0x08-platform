@@ -71,11 +71,12 @@ def load(app):
                         ":hot_face:",
                         ":sparkles:",
                         ":man_bowing:",
+                        ":triangular_flag_on_post:"
                     ]
 
                     prefix = random_text[randint(0,10) % len(random_text)]
                     suffix = random_emoji[randint(0,10) % len(random_emoji)]
-                    message = f"{prefix}, first blood for challenge **{sanitize(challenge.name)}** from {sanitize(user.name)} {suffix}"
+                    message = f"{prefix}, first blood for challenge **{sanitize(challenge.name)}** from **{sanitize(user.nama_lengkap)}** {suffix}"
                     webhook.content = message
                     webhook.execute()
             return result
