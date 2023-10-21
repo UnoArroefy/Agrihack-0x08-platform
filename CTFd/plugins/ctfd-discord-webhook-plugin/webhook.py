@@ -77,7 +77,7 @@ def load(app):
                     suffix = random_emoji[randint(0,10) % len(random_emoji)]
                     message = f"{prefix}, first blood for challenge **{sanitize(challenge.name)}** from {sanitize(user.name)} {suffix}"
                     webhook.content = message
-                webhook.execute()
+                    webhook.execute()
             return result
         return wrapper
 
